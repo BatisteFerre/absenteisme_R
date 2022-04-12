@@ -1,0 +1,211 @@
+---
+title: "Présentation des résultats"
+author: "L'absentéisme au travail"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: tactile
+    highlight: github
+    number_sections : FALSE
+    toc_depth: 3
+    toc: true
+---
+
+\tableofcontents
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+fig.height = 14
+fig.width = 10
+
+library(markdown)
+library(rmarkdown)
+library(knitr)
+library(ggplot2)
+library(prettydoc)
+
+options(scipen=999, digits = 2)
+
+load("donnees.Rdata")
+
+```
+
+# 1 - Résultats généraux sur l'absentéisme
+
+## 1.1 - Les origines de l'absentéisme
+
+*Ce graphique a été réalisé sur un ensemble de 106 arrêts déclarés.*
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(raison_abs, aes(x = reason, y = pourcentage, fill = reason)) + 
+  geom_bar(stat='identity') + 
+  geom_text(aes(label=round(pourcentage,2)), vjust=-1) +
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Origine de l'absentéisme au travail", x = "Raison", y = "Pourcentage")
+p
+
+```
+
+------------------------------------------------------------------------
+
+
+## 1.2 - Durée moyenne de l'absentéisme
+
+*Nous avons calculé que la durée moyenne de l'absentéisme est de 16 jours.*
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(graph_duree_moyenne_abs, aes(x = duree_abs, y = nombre)) + 
+  geom_bar(stat='identity', fill = "indianred2") + 
+  geom_text(aes(label=nombre), vjust=-1) +
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Durée moyenne de l'absentéisme", x = "Nombre de jours absents", y = "Nombre d'arrêts concernés")
+p
+
+```
+
+------------------------------------------------------------------------
+
+## 1.3 - Périodes les plus sujettes à l'absentéisme
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(periode_abs, aes(x = mois_debut_arret, y = nombre, fill = nombre)) + 
+  geom_bar(stat='identity') + 
+  geom_text(aes(label=nombre), vjust=-1) +
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Périodes les plus sujettes à l'absentéisme", x = "Mois de début de l'arrêt de travail", y = "Nombre d'arrêts concernés")
+p
+
+```
+
+# 2 - Analyse des votes
+
+## 2.1 - Pourcentage de votes à la question "are you happy ?"
+
+### 2.1.1 - Sur l'ensemble des employés
+
+*Ce graphique a été réalisé sur un ensemble de 106 834 votes.*
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(nombre_vote_employe_general, aes(x = vote, y = pourcentage, fill = vote)) + 
+    geom_bar(stat='identity') + 
+  geom_text(aes(label=round(pourcentage,2)), vjust=-1) +
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Pourcentage de votes à la question are you happy ?", x = "Vote", y = "Pourcentage")
+p
+
+```
+
+### 2.1.2 - Sur les employés ayant effectué un arrêt
+
+*Ce graphique a été réalisé sur un ensemble de 27 832 votes.*
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(nombre_vote_employe_abs, aes(x = vote, y = pourcentage, fill = vote)) + 
+    geom_bar(stat='identity') + 
+  geom_text(aes(label=round(pourcentage,2)), vjust=-1) +
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Pourcentage de votes à la question are you happy ?", x = "Vote", y = "Pourcentage")
+p
+
+```
+
+------------------------------------------------------------------------
+
+## 2.2 - Corrélation entre absentéisme et longueur des commentaires
+
+*Ce graphique a été réalisé sur un ensemble de 305 employés.*
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(moyenne_longueur_comm_employe, aes(x = moyenne_longueur, y = moyenne_vote)) + 
+  geom_point(stat='identity') + 
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Corrélation entre absentéisme et longueur des commentaires", x = "Longueur moyenne des commentaires par employé (en mots)", y = "Note moyenne par employé")
+p
+
+```
+
+------------------------------------------------------------------------
+
+## 2.3 - Corrélation entre note moyenne et likes / dislikes obtenus
+
+*Ce graphique a été réalisé sur un ensemble de 305 employés.*
+
+```{r, fig.height=7, fig.width=15}
+
+p <- ggplot(moyenne_interaction_employe, aes(x = moyenne_like, y = moyenne_vote)) + 
+  geom_point(stat='identity') + 
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Corrélation entre note moyenne et likes obtenus", x = "Moyenne de likes obtenus", y = "Note moyenne par employé")
+p
+r <- ggplot(moyenne_interaction_employe, aes(x = moyenne_dislike, y = moyenne_vote)) + 
+  geom_point(stat='identity') + 
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Corrélation entre note moyenne et dislikes obtenus", x = "Moyenne de dislikes obtenus", y = "Note moyenne par employé")
+r
+
+```
+
+```{r}
+
+p <- ggplot(type_feedback, aes(x = feedbackType, y = nombre, fill = feedbackType)) + 
+  geom_bar(stat='identity') +
+  geom_text(aes(label=round(nombre,2)), vjust=-1) +
+  theme(axis.text.x = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(angle = 90, size = 13, face = "bold"),
+        axis.title = element_text(size = 16, face = "bold",),
+        legend.position = 'none',
+        title = element_text(size = 16, face = "bold", color = "#993333",
+                             )) +
+  labs(title = "Type de commentaires", x = "Type", y = "Nombre")
+p
+
+```
+
